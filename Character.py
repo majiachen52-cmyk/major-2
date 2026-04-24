@@ -33,6 +33,11 @@ class Player:
     def get_rect(self):
         return pygame.Rect(self.x + 10, self.y + 32, 25, 10)
 
+    def get_center(self):
+        image = self.get_image()
+        rect = image.get_rect(topleft=(self.x, self.y))
+        return rect.center
+
     def check_move(self, dx, dy, walls):
         test_rect = self.get_rect()
         test_rect = test_rect.move(dx, dy)

@@ -3,28 +3,46 @@ import pygame
 
 def load_arrow_images():
     arrow_images = {
-        "up": pygame.transform.scale(
-            pygame.image.load("a1_up.png").convert_alpha(), (30, 30)
-        ),
-        "down": pygame.transform.scale(
-            pygame.image.load("a1_down.png").convert_alpha(), (30, 30)
-        ),
-        "left": pygame.transform.scale(
-            pygame.image.load("a1_left.png").convert_alpha(), (30, 30)
-        ),
-        "right": pygame.transform.scale(
-            pygame.image.load("a1_right.png").convert_alpha(), (30, 30)
-        )
+        "up": [],
+        "down": [],
+        "left": [],
+        "right": []
     }
+
+    for i in range(0, 30):
+        arrow_images["up"].append(
+            pygame.transform.scale(
+                pygame.image.load(f"a{i}_up.png").convert_alpha(), (70, 70)
+            )
+        )
+        arrow_images["down"].append(
+            pygame.transform.scale(
+                pygame.image.load(f"a{i}_down.png").convert_alpha(), (70, 70)
+            )
+        )
+        arrow_images["left"].append(
+            pygame.transform.scale(
+                pygame.image.load(f"a{i}_left.png").convert_alpha(), (70, 70)
+            )
+        )
+        arrow_images["right"].append(
+            pygame.transform.scale(
+                pygame.image.load(f"a{i}_right.png").convert_alpha(), (70, 70)
+            )
+        )
+
     return arrow_images
 
 
 class Arrow:
     def __init__(self, x, y, direction, arrow_images):
         self.direction = direction
-        self.image = arrow_images[direction]
-        self.rect = self.image.get_rect(center=(x, y))
-        self.speed = 8
+        self.images = arrow_images[direction]
+        self.frame_index = 0
+        self.image = self.images[self.frame_index]
+        self.rect = self.image.get_rect(center = (x, y))
+        self.speed = 6
+        self.animation_speed = 0.3
 
         if direction == "up":
             self.dx = 0
@@ -42,6 +60,12 @@ class Arrow:
     def update(self, walls):
         self.rect.x += self.dx
         self.rect.y += self.dy
+
+        self.frame_index += self.animation_speed
+        if self.frame_index >= len(self.images):
+            self.frame_index = 0
+
+        self.image = self.images[int(self.frame_index)]
 
         for wall in walls:
             if self.rect.colliderect(wall):
